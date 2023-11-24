@@ -111,7 +111,7 @@ class BackendTest extends TestCase {
 			->method('getTime')
 			->with()
 			->willReturn(123457);
-
+  
 		$rows = $this->reminderBackend->getRemindersToProcess();
 
 		$this->assertCount(2, $rows);
@@ -119,23 +119,6 @@ class BackendTest extends TestCase {
 		unset($rows[1]['id']);
 
 		$this->assertEquals($rows[0], [
-			'calendar_id' => 1,
-			'object_id' => 1,
-			'uid' => 'asd',
-			'is_recurring' => false,
-			'recurrence_id' => 123458,
-			'is_recurrence_exception' => false,
-			'event_hash' => 'asd123',
-			'alarm_hash' => 'asd567',
-			'type' => 'EMAIL',
-			'is_relative' => true,
-			'notification_date' => 123456,
-			'is_repeat_based' => false,
-			'calendardata' => 'Calendar data 123',
-			'displayname' => 'Displayname 123',
-			'principaluri' => 'principals/users/user001',
-		]);
-		$this->assertEquals($rows[1], [
 			'calendar_id' => 1,
 			'object_id' => 1,
 			'uid' => 'asd',
@@ -152,8 +135,24 @@ class BackendTest extends TestCase {
 			'displayname' => 'Displayname 123',
 			'principaluri' => 'principals/users/user001',
 		]);
+		$this->assertEquals($rows[1], [
+			'calendar_id' => 1,
+			'object_id' => 1,
+			'uid' => 'asd',
+			'is_recurring' => false,
+			'recurrence_id' => 123458,
+			'is_recurrence_exception' => false,
+			'event_hash' => 'asd123',
+			'alarm_hash' => 'asd567',
+			'type' => 'EMAIL',
+			'is_relative' => true,
+			'notification_date' => 123456,
+			'is_repeat_based' => false,
+			'calendardata' => 'Calendar data 123',
+			'displayname' => 'Displayname 123',
+			'principaluri' => 'principals/users/user001',
+		]);
 	}
-
 	public function testGetAllScheduledRemindersForEvent(): void {
 		$rows = $this->reminderBackend->getAllScheduledRemindersForEvent(1);
 
