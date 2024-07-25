@@ -113,6 +113,7 @@ export default defineComponent({
 
 	setup() {
 		const { currentView } = useNavigation()
+		const { directory } = useRouteParameters()
 		const renamingStore = useRenamingStore()
 
 		return {
