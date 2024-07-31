@@ -33,6 +33,14 @@ const client = davGetClient()
 const lastTwoWeeksTimestamp = Math.round((Date.now() / 1000) - (60 * 60 * 24 * 14))
 
 /**
+ * Helper to map a WebDAV result to a Nextcloud node
+ * The search endpoint already includes the dav remote URL so we must not include it in the source
+ *
+ * @param stat the WebDAV result
+ */
+const resultToNode = (stat: FileStat) => davResultToNode(stat, davRootPath, getBaseUrl())
+
+/**
  * Get recently changed nodes
  *
  * This takes the users preference about hidden files into account.
