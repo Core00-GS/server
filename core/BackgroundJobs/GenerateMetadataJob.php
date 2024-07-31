@@ -15,8 +15,8 @@ use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\FilesMetadata\Exceptions\FilesMetadataNotFoundException;
 use OCP\FilesMetadata\IFilesMetadataManager;
-use OCP\IConfig;
 use OCP\IAppConfig;
+use OCP\IConfig;
 use OCP\IUserManager;
 use Psr\Log\LoggerInterface;
 
