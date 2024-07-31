@@ -15,7 +15,7 @@ use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\FilesMetadata\Exceptions\FilesMetadataNotFoundException;
 use OCP\FilesMetadata\IFilesMetadataManager;
-use OCP\IConfig;
+use OCP\IAppConfig;
 use OCP\IUserManager;
 use Psr\Log\LoggerInterface;
 
@@ -25,7 +25,7 @@ class GenerateMetadataJob extends TimedJob {
 
 	public function __construct(
 		ITimeFactory $time,
-		private IConfig $config,
+		private IAppConfig $appConfig,
 		private IRootFolder $rootFolder,
 		private IUserManager $userManager,
 		private IFilesMetadataManager $filesMetadataManager,
@@ -40,7 +40,7 @@ class GenerateMetadataJob extends TimedJob {
 
 	protected function run(mixed $argument): void {
 		$users = $this->userManager->search('');
-		$lastHandledUser = $this->config->getAppValue('core', 'metadataGenerationLastHandledUser', '');
+		$lastHandledUser = $this->appConfig->getAppValue('core', 'metadataGenerationLastHandledUser', '');
 
 		// we'll only start timer once we have found a valid user to handle
 		// meaning NOW if we have not handled any user from a previous run
@@ -56,7 +56,7 @@ class GenerateMetadataJob extends TimedJob {
 				continue;
 			}
 
-			$this->config->setAppValue('core', 'metadataGenerationLastHandledUser', $userId);
+			$this->appConfig->setAppValue('core', 'metadataGenerationLastHandledUser', $userId);
 			$this->scanFilesForUser($user->getUID());
 
 			// Stop if execution time is more than one hour.
@@ -66,7 +66,7 @@ class GenerateMetadataJob extends TimedJob {
 		}
 
 		$this->jobList->remove(GenerateMetadataJob::class);
-		$this->config->deleteAppValue('core', 'metadataGenerationLastHandledUser');
+		$this->appConfig->deleteAppValue('core', 'metadataGenerationLastHandledUser');
 	}
 
 	private function scanFilesForUser(string $userId): void {
@@ -89,7 +89,7 @@ class GenerateMetadataJob extends TimedJob {
 			// Don't generate metadata for files bigger than configured metadata_max_filesize
 			// Files are loaded in memory so very big files can lead to an OOM on the server
 			$nodeSize = $node->getSize();
-			$nodeLimit = $this->config->getSystemValueInt('metadata_max_filesize', self::DEFAULT_MAX_FILESIZE);
+			$nodeLimit = $this->appConfig->getSystemValueInt('metadata_max_filesize', self::DEFAULT_MAX_FILESIZE);
 			if ($nodeSize > $nodeLimit * 1000000) {
 				$this->logger->debug("Skipping generating metadata for fileid " . $node->getId() . " as its size exceeds configured 'metadata_max_filesize'.");
 				continue;
