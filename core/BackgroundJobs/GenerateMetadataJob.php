@@ -61,7 +61,7 @@ class GenerateMetadataJob extends TimedJob {
 				continue;
 			}
 
-			$this->appConfig->setAppValue('core', 'metadataGenerationLastHandledUser', $userId);
+			$this->appConfig->setValueString('core', 'metadataGenerationLastHandledUser', $userId);
 			$this->scanFilesForUser($user->getUID());
 
 			// Stop if execution time is more than one hour.
