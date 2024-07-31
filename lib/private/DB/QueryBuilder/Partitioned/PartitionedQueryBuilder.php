@@ -105,7 +105,7 @@ use Psr\Log\LoggerInterface;
  *
  * [1]: A set of tables which can't be queried together with the rest of the tables, such as when sharding is used.
  */
-class PartitionedQueryBuilder extends ExtendedQueryBuilder {
+class PartitionedQueryBuilder extends ShardedQueryBuilder {
 	/** @var array<string, PartitionQuery> $splitQueries */
 	private array $splitQueries = [];
 	/** @var list<PartitionSplit> */
@@ -119,13 +119,19 @@ class PartitionedQueryBuilder extends ExtendedQueryBuilder {
 
 	public function __construct(
 		IQueryBuilder                  $builder,
+		private array                  $shardDefinitions,
+		private ShardConnectionManager $shardConnectionManager,
 	) {
-		parent::__construct($builder);
+		parent::__construct($builder, $this->shardDefinitions, $this->shardConnectionManager);
 		$this->quoteHelper = new QuoteHelper();
 	}
 
 	private function newQuery(): IQueryBuilder {
-		return $this->builder->getConnection()->getQueryBuilder();
+		return new ShardedQueryBuilder(
+			$this->builder->getConnection()->getQueryBuilder(),
+			$this->shardDefinitions,
+			$this->shardConnectionManager,
+		);
 	}
 
 	// we need to save selects until we know all the table aliases
