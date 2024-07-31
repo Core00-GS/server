@@ -11,6 +11,7 @@ module.exports = {
 		init: path.join(__dirname, 'apps/comments/src', 'init.ts'),
 	},
 	core: {
+		'ajax-cron': path.join(__dirname, 'core/src', 'ajax-cron.ts'),
 		files_client: path.join(__dirname, 'core/src', 'files/client.js'),
 		files_fileinfo: path.join(__dirname, 'core/src', 'files/fileinfo.js'),
 		install: path.join(__dirname, 'core/src', 'install.js'),
@@ -37,7 +38,7 @@ module.exports = {
 		main: path.join(__dirname, 'apps/files/src', 'main.ts'),
 		init: path.join(__dirname, 'apps/files/src', 'init.ts'),
 		search: path.join(__dirname, 'apps/files/src/plugins/search', 'folderSearch.ts'),
-		'personal-settings': path.join(__dirname, 'apps/files/src', 'main-personal-settings.js'),
+		'settings-personal': path.join(__dirname, 'apps/files/src', 'main-personal-settings.js'),
 		'reference-files': path.join(__dirname, 'apps/files/src', 'reference-files.ts'),
 	},
 	files_external: {
@@ -53,6 +54,7 @@ module.exports = {
 		init: path.join(__dirname, 'apps/files_sharing/src', 'init.ts'),
 		main: path.join(__dirname, 'apps/files_sharing/src', 'main.ts'),
 		'personal-settings': path.join(__dirname, 'apps/files_sharing/src', 'personal-settings.js'),
+		'public-file-request': path.join(__dirname, 'apps/files_sharing/src', 'public-file-request.ts'),
 	},
 	files_trashbin: {
 		init: path.join(__dirname, 'apps/files_trashbin/src', 'files-init.ts'),

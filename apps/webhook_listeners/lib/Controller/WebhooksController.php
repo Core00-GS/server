@@ -17,6 +17,7 @@ use OCA\WebhookListeners\Settings\Admin;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\ApiRoute;
+use OCP\AppFramework\Http\Attribute\AppApiAdminAccessWithoutUser;
 use OCP\AppFramework\Http\Attribute\AuthorizedAdminSetting;
 use OCP\AppFramework\Http\Attribute\OpenAPI;
 use OCP\AppFramework\Http\DataResponse;
@@ -56,6 +57,7 @@ class WebhooksController extends OCSController {
 	 */
 	#[ApiRoute(verb: 'GET', url: '/api/v1/webhooks')]
 	#[AuthorizedAdminSetting(settings:Admin::class)]
+	#[AppApiAdminAccessWithoutUser]
 	public function index(?string $uri = null): DataResponse {
 		try {
 			if ($uri !== null) {
@@ -89,6 +91,7 @@ class WebhooksController extends OCSController {
 	 */
 	#[ApiRoute(verb: 'GET', url: '/api/v1/webhooks/{id}')]
 	#[AuthorizedAdminSetting(settings:Admin::class)]
+	#[AppApiAdminAccessWithoutUser]
 	public function show(int $id): DataResponse {
 		try {
 			return new DataResponse($this->mapper->getById($id)->jsonSerialize());
@@ -107,6 +110,7 @@ class WebhooksController extends OCSController {
 	 * @param string $uri Webhook URI endpoint
 	 * @param string $event Event class name to listen to
 	 * @param ?array<string,mixed> $eventFilter Mongo filter to apply to the serialized data to decide if firing
+	 * @param ?string $userIdFilter User id to filter on. The webhook will only be called by requests from this user. Empty or null means no filtering.
 	 * @param ?array<string,string> $headers Array of headers to send
 	 * @param "none"|"headers"|null $authMethod Authentication method to use
 	 * @param ?array<string,mixed> $authData Array of data for authentication
@@ -121,11 +125,13 @@ class WebhooksController extends OCSController {
 	 */
 	#[ApiRoute(verb: 'POST', url: '/api/v1/webhooks')]
 	#[AuthorizedAdminSetting(settings:Admin::class)]
+	#[AppApiAdminAccessWithoutUser]
 	public function create(
 		string $httpMethod,
 		string $uri,
 		string $event,
 		?array $eventFilter,
+		?string $userIdFilter,
 		?array $headers,
 		?string $authMethod,
 		#[\SensitiveParameter]
@@ -141,8 +147,6 @@ class WebhooksController extends OCSController {
 			throw new OCSBadRequestException('This auth method does not exist');
 		}
 		try {
-			/* We can never reach here without a user in session */
-			assert(is_string($this->userId));
 			$webhookListener = $this->mapper->addWebhookListener(
 				$appId,
 				$this->userId,
@@ -150,6 +154,7 @@ class WebhooksController extends OCSController {
 				$uri,
 				$event,
 				$eventFilter,
+				$userIdFilter,
 				$headers,
 				$authMethod,
 				$authData,
@@ -173,6 +178,7 @@ class WebhooksController extends OCSController {
 	 * @param string $uri Webhook URI endpoint
 	 * @param string $event Event class name to listen to
 	 * @param ?array<string,mixed> $eventFilter Mongo filter to apply to the serialized data to decide if firing
+	 * @param ?string $userIdFilter User id to filter on. The webhook will only be called by requests from this user. Empty or null means no filtering.
 	 * @param ?array<string,string> $headers Array of headers to send
 	 * @param "none"|"headers"|null $authMethod Authentication method to use
 	 * @param ?array<string,mixed> $authData Array of data for authentication
@@ -187,12 +193,14 @@ class WebhooksController extends OCSController {
 	 */
 	#[ApiRoute(verb: 'POST', url: '/api/v1/webhooks/{id}')]
 	#[AuthorizedAdminSetting(settings:Admin::class)]
+	#[AppApiAdminAccessWithoutUser]
 	public function update(
 		int $id,
 		string $httpMethod,
 		string $uri,
 		string $event,
 		?array $eventFilter,
+		?string $userIdFilter,
 		?array $headers,
 		?string $authMethod,
 		#[\SensitiveParameter]
@@ -208,8 +216,6 @@ class WebhooksController extends OCSController {
 			throw new OCSBadRequestException('This auth method does not exist');
 		}
 		try {
-			/* We can never reach here without a user in session */
-			assert(is_string($this->userId));
 			$webhookListener = $this->mapper->updateWebhookListener(
 				$id,
 				$appId,
@@ -218,6 +224,7 @@ class WebhooksController extends OCSController {
 				$uri,
 				$event,
 				$eventFilter,
+				$userIdFilter,
 				$headers,
 				$authMethod,
 				$authData,
@@ -248,6 +255,7 @@ class WebhooksController extends OCSController {
 	 */
 	#[ApiRoute(verb: 'DELETE', url: '/api/v1/webhooks/{id}')]
 	#[AuthorizedAdminSetting(settings:Admin::class)]
+	#[AppApiAdminAccessWithoutUser]
 	public function destroy(int $id): DataResponse {
 		try {
 			$deleted = $this->mapper->deleteById($id);

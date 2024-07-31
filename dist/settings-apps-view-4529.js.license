@@ -12,6 +12,7 @@ SPDX-FileCopyrightText: assert developers
 SPDX-FileCopyrightText: Varun A P
 SPDX-FileCopyrightText: Tobias Koppers @sokra
 SPDX-FileCopyrightText: Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
+SPDX-FileCopyrightText: Thorsten Lünborg
 SPDX-FileCopyrightText: T. Jameson Little <t.jameson.little@gmail.com>
 SPDX-FileCopyrightText: Roman Shtylman <shtylman@gmail.com>
 SPDX-FileCopyrightText: Roeland Jago Douma
@@ -54,6 +55,9 @@ This file is generated from multiple sources. Included packages:
 - @floating-ui/utils
 	- version: 0.2.1
 	- license: MIT
+- @linusborg/vue-simple-portal
+	- version: 0.1.5
+	- license: Apache-2.0
 - @mdi/js
 	- version: 7.4.47
 	- license: Apache-2.0
@@ -63,12 +67,15 @@ This file is generated from multiple sources. Included packages:
 - @nextcloud/axios
 	- version: 2.5.0
 	- license: GPL-3.0-or-later
+- @nextcloud/browser-storage
+	- version: 0.4.0
+	- license: GPL-3.0-or-later
 - @nextcloud/capabilities
 	- version: 1.2.0
 	- license: GPL-3.0-or-later
 - @nextcloud/dialogs
-	- version: 5.3.1
-	- license: GPL-3.0-or-later
+	- version: 5.3.5
+	- license: AGPL-3.0-or-later
 - semver
 	- version: 7.6.2
 	- license: ISC
@@ -78,11 +85,8 @@ This file is generated from multiple sources. Included packages:
 - @nextcloud/initial-state
 	- version: 2.2.0
 	- license: GPL-3.0-or-later
-- @nextcloud/router
-	- version: 2.2.0
-	- license: GPL-3.0-or-later
 - @nextcloud/l10n
-	- version: 2.2.0
+	- version: 3.1.0
 	- license: GPL-3.0-or-later
 - @nextcloud/logger
 	- version: 3.0.2
@@ -93,11 +97,8 @@ This file is generated from multiple sources. Included packages:
 - @nextcloud/vue-select
 	- version: 3.25.0
 	- license: MIT
-- @nextcloud/browser-storage
-	- version: 0.3.0
-	- license: GPL-3.0-or-later
 - @nextcloud/vue
-	- version: 8.11.2
+	- version: 8.15.1
 	- license: AGPL-3.0-or-later
 - @vue/devtools-api
 	- version: 6.6.1
@@ -190,7 +191,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 1.0.2
 	- license: MIT
 - hasown
-	- version: 2.0.1
+	- version: 2.0.2
 	- license: MIT
 - ieee754
 	- version: 1.2.1
@@ -301,7 +302,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 2.7.16
 	- license: MIT
 - which-typed-array
-	- version: 1.1.14
+	- version: 1.1.15
 	- license: MIT
 - nextcloud
 	- version: 1.0.0

@@ -7,7 +7,7 @@ import type { ComponentPublicInstance, PropType } from 'vue'
 import type { FileSource } from '../types.ts'
 
 import { showError } from '@nextcloud/dialogs'
-import { FileType, Permission, Folder, File as NcFile, NodeStatus, Node, View } from '@nextcloud/files'
+import { FileType, Permission, Folder, File as NcFile, NodeStatus, Node } from '@nextcloud/files'
 import { translate as t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import { vOnClickOutside } from '@vueuse/components'
@@ -37,6 +37,14 @@ export default defineComponent({
 			type: Number,
 			default: 0,
 		},
+		isMtimeAvailable: {
+			type: Boolean,
+			default: false,
+		},
+		compact: {
+			type: Boolean,
+			default: false,
+		},
 	},
 
 	data() {
@@ -48,17 +56,10 @@ export default defineComponent({
 	},
 
 	computed: {
-		currentDir() {
-			// Remove any trailing slash but leave root slash
-			return (this.$route.query?.dir?.toString() || '/').replace(/^(.+)\/$/, '$1')
-		},
-		currentFileId() {
-			return this.$route.params?.fileid || this.$route.query?.fileid || null
-		},
-
 		fileid() {
 			return this.source.fileid ?? 0
 		},
+
 		uniqueId() {
 			return hashCode(this.source.source)
 		},
@@ -66,19 +67,31 @@ export default defineComponent({
 			return this.source.status === NodeStatus.LOADING
 		},
 
-		extension() {
-			if (this.source.attributes?.displayname) {
-				return extname(this.source.attributes.displayname)
-			}
-			return this.source.extension || ''
-		},
+		/**
+		 * The display name of the current node
+		 * Either the nodes filename or a custom display name (e.g. for shares)
+		 */
 		displayName() {
-			const ext = this.extension
-			const name = String(this.source.attributes.displayname
-				|| this.source.basename)
+			return this.source.displayname
+		},
+		/**
+		 * The display name without extension
+		 */
+		basename() {
+			if (this.extension === '') {
+				return this.displayName
+			}
+			return this.displayName.slice(0, 0 - this.extension.length)
+		},
+		/**
+		 * The extension of the file
+		 */
+		extension() {
+			if (this.source.type === FileType.Folder) {
+				return ''
+			}
 
-			// Strip extension from name if defined
-			return !ext ? name : name.slice(0, 0 - ext.length)
+			return extname(this.displayName)
 		},
 
 		draggingFiles() {
@@ -148,8 +161,22 @@ export default defineComponent({
 			},
 		},
 
-		isRenaming() {
-			return this.renamingStore.renamingNode === this.source
+		mtimeOpacity() {
+			const maxOpacityTime = 31 * 24 * 60 * 60 * 1000 // 31 days
+
+			const mtime = this.source.mtime?.getTime?.()
+			if (!mtime) {
+				return {}
+			}
+
+			// 1 = today, 0 = 31 days ago
+			const ratio = Math.round(Math.min(100, 100 * (maxOpacityTime - (Date.now() - mtime)) / maxOpacityTime))
+			if (ratio < 0) {
+				return {}
+			}
+			return {
+				color: `color-mix(in srgb, var(--color-main-text) ${ratio}%, var(--color-text-maxcontrast))`,
+			}
 		},
 	},
 
@@ -157,6 +184,8 @@ export default defineComponent({
 		/**
 		 * When the source changes, reset the preview
 		 * and fetch the new one.
+		 * @param a
+		 * @param b
 		 */
 		source(a: Node, b: Node) {
 			if (a.source !== b.source) {

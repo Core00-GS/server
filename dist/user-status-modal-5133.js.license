@@ -57,12 +57,15 @@ This file is generated from multiple sources. Included packages:
 - @nextcloud/axios
 	- version: 2.5.0
 	- license: GPL-3.0-or-later
+- @nextcloud/browser-storage
+	- version: 0.4.0
+	- license: GPL-3.0-or-later
 - @nextcloud/capabilities
 	- version: 1.2.0
 	- license: GPL-3.0-or-later
 - @nextcloud/dialogs
-	- version: 5.3.1
-	- license: GPL-3.0-or-later
+	- version: 5.3.5
+	- license: AGPL-3.0-or-later
 - semver
 	- version: 7.6.2
 	- license: ISC
@@ -72,10 +75,10 @@ This file is generated from multiple sources. Included packages:
 - @nextcloud/initial-state
 	- version: 2.2.0
 	- license: GPL-3.0-or-later
-- @nextcloud/router
-	- version: 2.2.0
-	- license: GPL-3.0-or-later
 - @nextcloud/l10n
+	- version: 3.1.0
+	- license: GPL-3.0-or-later
+- @nextcloud/router
 	- version: 2.2.0
 	- license: GPL-3.0-or-later
 - @nextcloud/moment
@@ -87,11 +90,8 @@ This file is generated from multiple sources. Included packages:
 - @nextcloud/vue-select
 	- version: 3.25.0
 	- license: MIT
-- @nextcloud/browser-storage
-	- version: 0.3.0
-	- license: GPL-3.0-or-later
 - @nextcloud/vue
-	- version: 8.11.2
+	- version: 8.15.1
 	- license: AGPL-3.0-or-later
 - @vueuse/components
 	- version: 10.11.0
@@ -184,7 +184,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 1.0.2
 	- license: MIT
 - hasown
-	- version: 2.0.1
+	- version: 2.0.2
 	- license: MIT
 - ieee754
 	- version: 1.2.1
@@ -292,7 +292,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 3.6.2
 	- license: MIT
 - which-typed-array
-	- version: 1.1.14
+	- version: 1.1.15
 	- license: MIT
 - nextcloud
 	- version: 1.0.0

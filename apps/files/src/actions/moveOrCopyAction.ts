@@ -10,7 +10,7 @@ import type { MoveCopyResult } from './moveOrCopyActionUtils'
 import { isAxiosError } from '@nextcloud/axios'
 import { FilePickerClosed, getFilePickerBuilder, showError } from '@nextcloud/dialogs'
 import { emit } from '@nextcloud/event-bus'
-import { FileAction, FileType, NodeStatus, davGetClient, davRootPath, davResultToNode, davGetDefaultPropfind, getUniqueName } from '@nextcloud/files'
+import { FileAction, FileType, NodeStatus, davGetClient, davRootPath, davResultToNode, davGetDefaultPropfind, getUniqueName, Permission } from '@nextcloud/files'
 import { translate as t } from '@nextcloud/l10n'
 import { openConflictPicker, hasConflict } from '@nextcloud/upload'
 import { basename, join } from 'path'
@@ -128,11 +128,8 @@ export const handleCopyMoveNodeTo = async (node: Node, destination: Folder, meth
 					try {
 						// Let the user choose what to do with the conflicting files
 						const { selected, renamed } = await openConflictPicker(destination.path, [node], otherNodes.contents)
-						// if the user selected to keep the old file, and did not select the new file
-						// that means they opted to delete the current node
+						// two empty arrays: either only old files or conflict skipped -> no action required
 						if (!selected.length && !renamed.length) {
-							await client.deleteFile(currentPath)
-							emit('files:node:deleted', node)
 							return
 						}
 					} catch (error) {
@@ -200,6 +197,7 @@ const openFilePickerForAction = async (action: MoveCopyAction, dir = '/', nodes:
 					label: target ? t('files', 'Copy to {target}', { target }, undefined, { escape: false, sanitize: false }) : t('files', 'Copy'),
 					type: 'primary',
 					icon: CopyIconSvg,
+					disabled: selection.some((node) => (node.permissions & Permission.CREATE) === 0),
 					async callback(destination: Node[]) {
 						resolve({
 							destination: destination[0] as Folder,

@@ -39,8 +39,13 @@ class GenerateMetadataJob extends TimedJob {
 	}
 
 	protected function run(mixed $argument): void {
+		if ($this->appConfig->getValueBool('core', 'metadataGenerationDone', false)) {
+			return;
+		}
+
+		$lastHandledUser = $this->appConfig->getValueString('core', 'metadataGenerationLastHandledUser', '');
+
 		$users = $this->userManager->search('');
-		$lastHandledUser = $this->appConfig->getAppValue('core', 'metadataGenerationLastHandledUser', '');
 
 		// we'll only start timer once we have found a valid user to handle
 		// meaning NOW if we have not handled any user from a previous run
@@ -65,8 +70,8 @@ class GenerateMetadataJob extends TimedJob {
 			}
 		}
 
-		$this->jobList->remove(GenerateMetadataJob::class);
-		$this->appConfig->deleteAppValue('core', 'metadataGenerationLastHandledUser');
+		$this->appConfig->deleteKey('core', 'metadataGenerationLastHandledUser');
+		$this->appConfig->setValueBool('core', 'metadataGenerationDone', true);
 	}
 
 	private function scanFilesForUser(string $userId): void {
