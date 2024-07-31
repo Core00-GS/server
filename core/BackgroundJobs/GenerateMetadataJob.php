@@ -15,6 +15,7 @@ use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\FilesMetadata\Exceptions\FilesMetadataNotFoundException;
 use OCP\FilesMetadata\IFilesMetadataManager;
+use OCP\IConfig;
 use OCP\IAppConfig;
 use OCP\IUserManager;
 use Psr\Log\LoggerInterface;
@@ -25,6 +26,7 @@ class GenerateMetadataJob extends TimedJob {
 
 	public function __construct(
 		ITimeFactory $time,
+		private IConfig $config,
 		private IAppConfig $appConfig,
 		private IRootFolder $rootFolder,
 		private IUserManager $userManager,
@@ -94,7 +96,7 @@ class GenerateMetadataJob extends TimedJob {
 			// Don't generate metadata for files bigger than configured metadata_max_filesize
 			// Files are loaded in memory so very big files can lead to an OOM on the server
 			$nodeSize = $node->getSize();
-			$nodeLimit = $this->appConfig->getSystemValueInt('metadata_max_filesize', self::DEFAULT_MAX_FILESIZE);
+			$nodeLimit = $this->config->getSystemValueInt('metadata_max_filesize', self::DEFAULT_MAX_FILESIZE);
 			if ($nodeSize > $nodeLimit * 1000000) {
 				$this->logger->debug("Skipping generating metadata for fileid " . $node->getId() . " as its size exceeds configured 'metadata_max_filesize'.");
 				continue;
