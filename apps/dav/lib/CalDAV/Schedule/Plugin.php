@@ -177,10 +177,11 @@ class Plugin extends \Sabre\CalDAV\Schedule\Plugin {
 			}
 			// determine if we are updating a calendar event
 			if (!$isNew) {
-				/** @var \OCA\DAV\CalDAV\Calendar $currentNode */
 				// retrieve current calendar event node
+				/** @var \OCA\DAV\CalDAV\Calendar $currentNode */
 				$currentNode = $this->server->tree->getNodeForPath($request->getPath());
 				// convert calendar event string data to VCalendar object
+				/** @var Sabre\VObject\Component\VCalendar $currentObject */
 				$currentObject = Reader::read($currentNode->get());
 			} else {
 				$currentObject = null;
