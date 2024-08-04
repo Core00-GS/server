@@ -165,28 +165,32 @@ class Plugin extends \Sabre\CalDAV\Schedule\Plugin {
 			
 			/** @var \OCA\DAV\CalDAV\Calendar $calendarNode */
 			$calendarNode = $this->server->tree->getNodeForPath($calendarPath);
-
+			// extract addresses for owner
 			$addresses = $this->getAddressesForPrincipal($calendarNode->getOwner());
-			// determain if this is a shared calendar
+			// determain if request is from a sharee
 			if ($calendarNode->isShared()) {
+				// extract addresses for sharee and add to address collection
 				$addresses = array_merge(
 					$addresses,
 					$this->getAddressesForPrincipal($calendarNode->getPrincipalURI())
 				);
 			}
-	
+			// determine if we are updating a calendar event
 			if (!$isNew) {
-				$node = $this->server->tree->getNodeForPath($request->getPath());
-				$oldObj = Reader::read($node->get());
+				/** @var \OCA\DAV\CalDAV\Calendar $currentNode */
+				// retrieve current calendar event node
+				$currentNode = $this->server->tree->getNodeForPath($request->getPath());
+				// convert calendar event string data to VCalendar object
+				$currentObject = Reader::read($currentNode->get());
 			} else {
-				$oldObj = null;
+				$currentObject = null;
 			}
+			// process request
+			$this->processICalendarChange($currentObject, $vCal, $addresses, [], $modified);
 	
-			$this->processICalendarChange($oldObj, $vCal, $addresses, [], $modified);
-	
-			if ($oldObj) {
+			if ($currentObject) {
 				// Destroy circular references so PHP will GC the object.
-				$oldObj->destroy();
+				$currentObject->destroy();
 			}
 			
 		} catch (SameOrganizerForAllComponentsException $e) {
