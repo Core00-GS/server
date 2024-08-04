@@ -395,9 +395,9 @@ class PluginTest extends TestCase {
 		$this->assertEquals('/remote.php/dav/'. $calendarHome . '/' . $calendarUri, $result->getHref());
 	}
 
-	/** 
+	/**
 	 * Test Calendar Event Creation for Personal Calendar
-	 * 
+	 *
 	 * Should generate 2 messages for attendees User 2 and User External
 	 */
 	public function testCalendarObjectChangePersonalCalendarCreate() {
@@ -499,9 +499,9 @@ class PluginTest extends TestCase {
 
 	}
 
-	/** 
+	/**
 	 * Test Calendar Event Creation for Shared Calendar as Sharer/Owner
-	 * 
+	 *
 	 * Should generate 3 messages for attendees User 2 (Sharee), User 3 (Non-Sharee) and User External
 	 */
 	public function testCalendarObjectChangeSharedCalendarSharerCreate() {
@@ -615,9 +615,9 @@ class PluginTest extends TestCase {
 
 	}
 
-	/** 
+	/**
 	 * Test Calendar Event Creation for Shared Calendar as Shree
-	 * 
+	 *
 	 * Should generate 3 messages for attendees User 1 (Sharer/Owner), User 3 (Non-Sharee) and User External
 	 */
 	public function testCalendarObjectChangeSharedCalendarShreeCreate() {
