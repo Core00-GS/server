@@ -162,7 +162,8 @@ class Plugin extends \Sabre\CalDAV\Schedule\Plugin {
 			if (!$this->scheduleReply($this->server->httpRequest)) {
 				return;
 			}
-	
+			
+			/** @var \OCA\DAV\CalDAV\Calendar $calendarNode */
 			$calendarNode = $this->server->tree->getNodeForPath($calendarPath);
 
 			$addresses = $this->getAddressesForPrincipal($calendarNode->getOwner());
@@ -555,7 +556,9 @@ EOF;
 		$calendarTimeZone = new DateTimeZone('UTC');
 
 		$homePath = $result[0][200]['{' . self::NS_CALDAV . '}calendar-home-set']->getHref();
+		/** @var \OCA\DAV\CalDAV\Calendar $node */
 		foreach ($this->server->tree->getNodeForPath($homePath)->getChildren() as $node) {
+			
 			if (!$node instanceof ICalendar) {
 				continue;
 			}
